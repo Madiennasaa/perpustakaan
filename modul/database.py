@@ -2,10 +2,11 @@ import os
 import mysql.connector
 from dotenv import load_dotenv
 
+# Load file .env
+load_dotenv()
+
 class Database:
     def __init__(self):
-        load_dotenv()  # load file .env
-
         try:
             self.db = mysql.connector.connect(
                 host=os.getenv("DB_HOST"),
@@ -15,6 +16,12 @@ class Database:
                 database=os.getenv("DB_NAME")
             )
             self.cursor = self.db.cursor()
-            print("Koneksi Cloud Berhasil!")
         except mysql.connector.Error as err:
-            print(f"Error: {err}")
+            print(f"Error Koneksi: {err}")
+            self.db = None
+
+# --- INI KUNCI PERBAIKANNYA ---
+def get_connection():
+    """Fungsi ini agar file lain bisa memanggil modul.database.get_connection"""
+    obj_db = Database()
+    return obj_db.db
